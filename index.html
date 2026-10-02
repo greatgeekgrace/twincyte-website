@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Twincyte — Digital twins of human cells</title>
+<meta name="description" content="Twincyte builds AI models that predict how human cells respond to genetic perturbations, including in cell types where no perturbation has been measured.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://twincyte.xyz/">
+<meta property="og:title" content="Twincyte — Digital twins of human cells">
+<meta property="og:description" content="AI models that predict how human cells respond to gene knockdowns, zero-shot across cell types.">
+<meta name="theme-color" content="#0c1624">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Organization","name":"Twincyte","url":"https://twincyte.xyz/","email":"hello@twincyte.xyz","foundingDate":"2026","founder":{"@type":"Person","name":"Maverick"},"description":"AI models that predict how human cells respond to genetic perturbations."}
+</script>
+<style>
+:root{
+  --bg:#f8fafb; --surface:#ffffff; --ink:#0c1624; --muted:#4f5d6e; --line:#dfe6ec;
+  --teal:#0e8c7e; --teal-ink:#0a6b60; --teal-soft:#e2f3f0;
+  --violet:#5f4fd1; --violet-soft:#ece9fb;
+  --radius:16px; --maxw:1120px;
+  color-scheme:light dark;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#0a0f16; --surface:#101824; --ink:#e6edf4; --muted:#9aa8b7; --line:#1f2b3a;
+    --teal:#3cc4b2; --teal-ink:#7fdccf; --teal-soft:#0f2726;
+    --violet:#a094ff; --violet-soft:#1b1834;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:inherit}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 20px}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:10;background:var(--bg);background:color-mix(in srgb,var(--bg) 86%,transparent);-webkit-backdrop-filter:saturate(1.4) blur(10px);backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;gap:24px;height:64px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;letter-spacing:-.01em;text-decoration:none}
+.brand svg{width:28px;height:28px}
+.links{display:flex;gap:22px;margin-left:auto}
+.links a{text-decoration:none;color:var(--muted);font-size:15px}
+.links a:hover{color:var(--ink)}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:999px;font-weight:600;font-size:15px;line-height:1.2;text-decoration:none;border:1px solid transparent;transition:transform .15s ease,opacity .15s ease}
+.btn:hover{transform:translateY(-1px)}
+.btn-primary{background:var(--ink);color:var(--bg)}
+.btn-ghost{background:var(--surface);border-color:var(--line)}
+.nav .btn{padding:9px 16px;font-size:14px}
+
+/* hero */
+.hero{padding:76px 0 64px}
+.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+.eyebrow{display:inline-block;font-size:12.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--teal-ink);background:var(--teal-soft);padding:6px 12px;border-radius:999px}
+h1{font-size:clamp(2.4rem,5.4vw,4rem);line-height:1.04;letter-spacing:-.035em;margin:18px 0}
+.lede{font-size:clamp(1.05rem,1.7vw,1.22rem);color:var(--muted);max-width:34em;margin:0}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.note{margin-top:26px;font-size:14px;color:var(--muted);display:flex;gap:10px;align-items:center}
+.pulse{flex:none;width:8px;height:8px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 4px var(--teal-soft)}
+.art svg{width:100%;height:auto;display:block}
+
+/* illustration */
+.c-body{fill:var(--teal-soft);stroke:var(--teal);stroke-width:2}
+.c-nuc{fill:var(--teal);fill-opacity:.22;stroke:var(--teal);stroke-width:2}
+.c-org{fill:var(--teal);fill-opacity:.45}
+.t-body{fill:url(#dots);stroke:var(--violet);stroke-width:2;stroke-dasharray:7 6}
+.t-nuc{fill:none;stroke:var(--violet);stroke-width:2;stroke-dasharray:4 5}
+.t-dot{fill:var(--violet);fill-opacity:.5}
+.bar-m{fill:var(--teal)}
+.bar-p{fill:var(--violet);fill-opacity:.85}
+.axis{stroke:var(--line);stroke-width:1.5}
+.arrow{stroke:var(--muted);stroke-width:1.8;fill:none}
+.arrow-head{fill:var(--muted)}
+.lbl{fill:var(--muted);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+.lbl-s{fill:var(--muted);font:600 10.5px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}
+
+/* sections */
+section{padding:76px 0;border-top:1px solid var(--line)}
+.kicker{font-size:12.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--violet);margin:0 0 10px}
+h2{font-size:clamp(1.7rem,3.1vw,2.45rem);line-height:1.15;letter-spacing:-.025em;margin:0 0 14px}
+.sub{color:var(--muted);max-width:42em;margin:0 0 38px;font-size:1.06rem}
+.grid{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px}
+.card h3{margin:0 0 8px;font-size:1.08rem;letter-spacing:-.01em;line-height:1.3}
+.card p{margin:0;color:var(--muted);font-size:.97rem}
+.stat{font-size:1.9rem;font-weight:700;letter-spacing:-.02em;line-height:1.1;color:var(--teal-ink);margin-bottom:10px}
+.n{display:block;font:600 13px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--violet);margin-bottom:12px}
+.ico{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--violet-soft);color:var(--violet);margin-bottom:14px}
+.ico svg{width:20px;height:20px}
+.callout{margin-top:22px;color:var(--muted);font-size:1rem}
+.callout strong{color:var(--ink)}
+.tier .tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--teal-ink);margin-bottom:8px}
+.fine{margin-top:18px;font-size:14px;color:var(--muted)}
+
+/* roadmap */
+.timeline{list-style:none;padding:0;margin:0;border-top:1px solid var(--line)}
+.timeline li{display:grid;grid-template-columns:150px 1fr;gap:24px;padding:22px 0;border-bottom:1px solid var(--line)}
+.when{font-weight:700;letter-spacing:-.01em}
+.when.now{color:var(--teal-ink)}
+.timeline p{margin:0;color:var(--muted)}
+.timeline strong{color:var(--ink);font-weight:600}
+
+/* team */
+.person{display:flex;gap:20px;align-items:flex-start;max-width:720px}
+.avatar{flex:none;width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--violet));display:grid;place-items:center;color:#fff;font-weight:700;font-size:21px;letter-spacing:.02em}
+.person h3{margin:4px 0 2px;font-size:1.15rem}
+.role{color:var(--teal-ink);font-weight:600;font-size:.95rem;margin:0 0 8px}
+.person p{margin:0;color:var(--muted)}
+
+/* contact */
+.contact{text-align:center}
+.contact .sub{margin-left:auto;margin-right:auto}
+.contact .cta{justify-content:center}
+.mail{font:600 15px ui-monospace,SFMono-Regular,Menlo,monospace}
+
+footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--muted);font-size:13px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between}
+
+@media (max-width:860px){
+  .hero{padding:48px 0 44px}
+  .hero .wrap{grid-template-columns:1fr;gap:36px}
+  .links{display:none}
+  .nav .btn{margin-left:auto}
+  section{padding:56px 0}
+  .timeline li{grid-template-columns:1fr;gap:4px}
+}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Twincyte home">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="25" cy="32" r="17" fill="#0e8c7e"/><circle cx="39" cy="32" r="17" fill="none" stroke="#5f4fd1" stroke-width="4" stroke-dasharray="5 4"/></svg>
+      Twincyte
+    </a>
+    <nav class="links" aria-label="Sections">
+      <a href="#product">Product</a>
+      <a href="#approach">Approach</a>
+      <a href="#use-cases">Use cases</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#team">Team</a>
+    </nav>
+    <a class="btn btn-primary" href="mailto:hello@twincyte.xyz?subject=Twincyte%20early%20access">Early access</a>
+  </div>
+</header>
+
+<main id="top">
+
+<section class="hero" style="border-top:0">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">AI for cell biology</span>
+      <h1>Digital twins of human&nbsp;cells.</h1>
+      <p class="lede">Twincyte builds AI models that predict how human cells respond to genetic perturbations, including in cell types where no perturbation has ever been measured. Run thousands of knockdowns in silico, then take the best few to the bench.</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="mailto:hello@twincyte.xyz?subject=Twincyte%20early%20access">Request early access</a>
+        <a class="btn btn-ghost" href="#approach">How it works</a>
+      </div>
+      <p class="note"><span class="pulse" aria-hidden="true"></span>Taking part in the Arc Institute Virtual Cell Challenge 2026: zero-shot prediction across cell lines.</p>
+    </div>
+    <div class="art">
+      <svg viewBox="0 0 520 360" role="img" aria-label="A measured cell next to its digital twin, with matching bar charts of gene-expression changes after a knockdown">
+        <defs>
+          <pattern id="dots" width="11" height="11" patternUnits="userSpaceOnUse"><circle cx="2.5" cy="2.5" r="1.6" class="t-dot"/></pattern>
+          <marker id="head" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrow-head"/></marker>
+        </defs>
+        <text x="140" y="26" text-anchor="middle" class="lbl-s">MEASURED</text>
+        <text x="380" y="26" text-anchor="middle" class="lbl-s">DIGITAL TWIN</text>
+        <g transform="translate(140,140) scale(.86)">
+          <path class="c-body" d="M0,-92 C52,-94 96,-52 94,2 C92,56 50,96 -4,92 C-58,88 -98,50 -94,-4 C-90,-58 -50,-90 0,-92 Z"/>
+          <circle class="c-nuc" cx="8" cy="-6" r="32"/>
+          <ellipse class="c-org" cx="-48" cy="32" rx="14" ry="7" transform="rotate(-20 -48 32)"/>
+          <ellipse class="c-org" cx="42" cy="50" rx="12" ry="6" transform="rotate(25 42 50)"/>
+          <ellipse class="c-org" cx="-36" cy="-52" rx="10" ry="5" transform="rotate(15 -36 -52)"/>
+          <circle class="c-org" cx="58" cy="-34" r="4"/>
+          <circle class="c-org" cx="-62" cy="-8" r="3.5"/>
+          <circle class="c-org" cx="8" cy="64" r="3"/>
+        </g>
+        <g transform="translate(380,140) scale(.86)">
+          <path class="t-body" d="M0,-92 C52,-94 96,-52 94,2 C92,56 50,96 -4,92 C-58,88 -98,50 -94,-4 C-90,-58 -50,-90 0,-92 Z"/>
+          <circle class="t-nuc" cx="8" cy="-6" r="32"/>
+        </g>
+        <path class="arrow" d="M232,140 L286,140" marker-end="url(#head)"/>
+        <text x="260" y="126" text-anchor="middle" class="lbl-s">IN SILICO</text>
+        <line class="axis" x1="52" y1="290" x2="228" y2="290"/>
+        <line class="axis" x1="292" y1="290" x2="468" y2="290"/>
+        <g class="bar-m">
+          <rect x="58" y="276" width="10" height="14" rx="2"/><rect x="72" y="290" width="10" height="9" rx="2"/><rect x="86" y="266" width="10" height="24" rx="2"/><rect x="100" y="285" width="10" height="5" rx="2"/><rect x="114" y="290" width="10" height="20" rx="2"/><rect x="128" y="279" width="10" height="11" rx="2"/><rect x="142" y="290" width="10" height="6" rx="2"/><rect x="156" y="262" width="10" height="28" rx="2"/><rect x="170" y="290" width="10" height="13" rx="2"/><rect x="184" y="283" width="10" height="7" rx="2"/><rect x="198" y="290" width="10" height="24" rx="2"/><rect x="212" y="274" width="10" height="16" rx="2"/>
+        </g>
+        <g class="bar-p">
+          <rect x="298" y="278" width="10" height="12" rx="2"/><rect x="312" y="290" width="10" height="11" rx="2"/><rect x="326" y="268" width="10" height="22" rx="2"/><rect x="340" y="283" width="10" height="7" rx="2"/><rect x="354" y="290" width="10" height="18" rx="2"/><rect x="368" y="281" width="10" height="9" rx="2"/><rect x="382" y="290" width="10" height="7" rx="2"/><rect x="396" y="265" width="10" height="25" rx="2"/><rect x="410" y="290" width="10" height="15" rx="2"/><rect x="424" y="285" width="10" height="5" rx="2"/><rect x="438" y="290" width="10" height="22" rx="2"/><rect x="452" y="272" width="10" height="18" rx="2"/>
+        </g>
+        <text x="140" y="346" text-anchor="middle" class="lbl">Measured knockdown response</text>
+        <text x="380" y="346" text-anchor="middle" class="lbl">Twincyte prediction</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section id="problem">
+  <div class="wrap">
+    <p class="kicker">The problem</p>
+    <h2>Biology has far more experiments than labs can run</h2>
+    <p class="sub">The effect of turning a gene down depends on the cell it happens in. Measuring every gene in every relevant cell type is out of reach, so most decisions rest on data from the wrong cell type, or on no data at all.</p>
+    <div class="grid">
+      <div class="card"><div class="stat">~20,000</div><h3>Protein-coding genes</h3><p>Each one can be knocked down, alone or in combination.</p></div>
+      <div class="card"><div class="stat">Hundreds</div><h3>Cell types and states</h3><p>The same knockdown can do very different things in different tissues.</p></div>
+      <div class="card"><div class="stat">1 context</div><h3>Per screen</h3><p>Single-cell CRISPR screens are powerful but slow and costly, and each covers one cell context at a time.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="product">
+  <div class="wrap">
+    <p class="kicker">Product</p>
+    <h2>Twincyte Virtual Cell</h2>
+    <p class="sub">A predictive model of the cell you care about, built from nothing more than its unperturbed profile.</p>
+    <div class="grid">
+      <div class="card">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+        <h3>Zero-shot response prediction</h3>
+        <p>Provide non-targeting control profiles of a cell line and get the predicted expression shift for any gene knockdown, with no perturbation data from that cell line required.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></div>
+        <h3>Transcriptome-wide readout</h3>
+        <p>Predictions cover the whole transcriptome, with differentially expressed genes ranked by effect size and direction.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M6 12h12M10 18h4"/></svg></div>
+        <h3>In-silico screens</h3>
+        <p>Score thousands of knockdowns against a target signature, such as reversing a disease state, and get a ranked shortlist.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/><path d="M9 12l2 2 4-4"/></svg></div>
+        <h3>Confidence you can act on</h3>
+        <p>Every prediction carries an uncertainty estimate, so you know which hypotheses deserve a wet-lab test.</p>
+      </div>
+    </div>
+    <p class="callout"><strong>Delivered as a web workspace and a Python API.</strong> Early access opens to academic labs first.</p>
+  </div>
+</section>
+
+<section id="approach">
+  <div class="wrap">
+    <p class="kicker">Approach</p>
+    <h2>How it works</h2>
+    <p class="sub">Generalizing to unseen cell types is the hard part. Our models are designed and evaluated for exactly that.</p>
+    <div class="grid">
+      <div class="card"><span class="n">01</span><h3>Learn from public perturbation data</h3><p>Pretrain on large public single-cell atlases and CRISPR perturbation screens across many cell lines.</p></div>
+      <div class="card"><span class="n">02</span><h3>Represent genes with prior knowledge</h3><p>Describe every gene with sequence-, pathway- and literature-derived features, so the model can reason about knockdowns it has never observed.</p></div>
+      <div class="card"><span class="n">03</span><h3>Condition on the cell's baseline</h3><p>Characterize a new cell context only by its control profiles, and predict the change rather than just the state.</p></div>
+      <div class="card"><span class="n">04</span><h3>Benchmark on held-out cell lines</h3><p>Score models only on cell lines and genes they never saw, with metrics that reward recovering the right differentially expressed genes, not just matching the average cell.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="use-cases">
+  <div class="wrap">
+    <p class="kicker">Use cases</p>
+    <h2>Built for R&amp;D teams</h2>
+    <p class="sub">For computational biologists and drug-discovery teams who need to decide which experiments are worth running.</p>
+    <div class="grid">
+      <div class="card"><h3>Target discovery</h3><p>Rank knockdowns that push cells toward a desired state before committing to a screen.</p></div>
+      <div class="card"><h3>Screen design</h3><p>Choose which perturbations and cell lines to measure next, where a real experiment will teach the most.</p></div>
+      <div class="card"><h3>Context transfer</h3><p>Carry results from a screened cell line over to the cell type you actually care about.</p></div>
+      <div class="card"><h3>Mechanism hypotheses</h3><p>Match predicted knockdown signatures against compound and disease signatures to propose mechanisms of action.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="business">
+  <div class="wrap">
+    <p class="kicker">Business model</p>
+    <h2>Software that scales with your research</h2>
+    <p class="sub">A free tier for academic research, usage-based pricing for companies, and private models for teams with their own perturbation data.</p>
+    <div class="grid">
+      <div class="card tier"><span class="tag">Academic</span><h3>Free research tier</h3><p>A monthly prediction quota for non-commercial research.</p></div>
+      <div class="card tier"><span class="tag">Teams</span><h3>Usage-based API</h3><p>Pay per prediction, with a shared workspace for biotech R&amp;D teams.</p></div>
+      <div class="card tier"><span class="tag">Enterprise</span><h3>Private models</h3><p>Models fine-tuned on a customer's own perturbation data and deployed in their own cloud.</p></div>
+    </div>
+    <p class="fine">Pricing will be published with the public beta.</p>
+  </div>
+</section>
+
+<section id="roadmap">
+  <div class="wrap">
+    <p class="kicker">Roadmap</p>
+    <h2>Where we are</h2>
+    <p class="sub">Twincyte is at the pre-seed stage.</p>
+    <ul class="timeline">
+      <li><span class="when now">Now · Q4 2026</span><p><strong>First models and evaluation pipeline.</strong> Entry in the Arc Institute Virtual Cell Challenge 2026 (final submissions due November 5, 2026).</p></li>
+      <li><span class="when">Q1 2027</span><p><strong>Private beta.</strong> Prediction API and workspace for academic labs.</p></li>
+      <li><span class="when">2027</span><p><strong>Beyond single knockdowns.</strong> Chemical perturbations and gene combinations; first biotech design partners.</p></li>
+    </ul>
+  </div>
+</section>
+
+<section id="team">
+  <div class="wrap">
+    <p class="kicker">Team</p>
+    <h2>Founder</h2>
+    <div class="person">
+      <div class="avatar" aria-hidden="true">M</div>
+      <div>
+        <h3>Maverick</h3>
+        <p class="role">Founder</p>
+        <p>Trained in pharmacy (B.S.), then spent more than ten years as a software and data/algorithm engineer in the tech industry. Started Twincyte to make predictive models of cell biology practical for everyday research.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <div class="wrap">
+    <p class="kicker">Contact</p>
+    <h2>Work with us</h2>
+    <p class="sub">We're looking for early-access users, and for collaborators with perturbation data who want to see how far zero-shot prediction can go.</p>
+    <div class="cta">
+      <a class="btn btn-primary" href="mailto:hello@twincyte.xyz?subject=Twincyte%20early%20access">Request early access</a>
+      <a class="btn btn-ghost mail" href="mailto:hello@twincyte.xyz">hello@twincyte.xyz</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Twincyte</span>
+    <span>Virtual Cell Challenge is a trademark of Arc Research Institute. Twincyte is an independent participant and is not affiliated with Arc Institute.</span>
+  </div>
+</footer>
+
+</body>
+</html>
